@@ -1,0 +1,34 @@
+What is a Custom Field? 
+Is a new field data for a post type
+
+NO HACER : 
+Escrivimos en el post_type: 
+'supports'=> array('title','editor','excerpt','custom-fields'),
+
+Vamos al editor y seleccionamos "Custom Fields" y nos dará la opción de escribirlos manualmente
+
+Preferences -> Panels -> Custom Fields (allow)
+
+PROGRAMAR EL CUSTOM FIELD:
+Hay dos plugins que se pueden usar:
+
+- Advanced Custom fields
+- CMB2 (Custom Metabox 2)
+
+
+Usamos el plugin 1: Advanced Custom fields (WP Engine)
+Usamos el plugin creamos "add new Field Group": 
+
+Nombre: Event Date
+Field Label: Event Date
+Field Name: event-date (automatico)
+Field Type: seleccionar valor-muchas opciones
+Field Instructions:
+Required: Yes or No
+
+
+El plugin incluye dos funciones, las cuales devuelven el valor del custom field que hemos creado
+
+the_field('event_date'); : hace echo
+get_field('event_date'); : este no hace echo
+

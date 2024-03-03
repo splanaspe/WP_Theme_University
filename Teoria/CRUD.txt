@@ -1,0 +1,107 @@
+EN JS, con JQuery, con esta linea podemos actuar sobre el elemento
+
+$(".delete-note").on('click', this.deleteNote)
+
+Cuando el elemento HTML que tiene por clase .delete-note sea clicado, se llamara la funcion "deleteNote"
+
+
+GET Request : se usa para obtener los datos del request
+POST Request: se usa para modificar los datos
+DELETE Request: se usa para eliminar
+
+
+Para poder eliminar a través de Delete request, tenemos que añadir esta propiedad en functions.php
+'nonce' => wp_create_nonce('wp_rest')
+
+Esto lo que hace es crear un nº que identifica a la sesión del usuario
+
+Para poder hacer el request, tenemos que incluir en el request esto, beforeSend
+
+deleteNote(){
+        $.ajax({
+            beforeSend: (xhr) => {
+                xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
+            },
+            url: universityData.root_url + '/wp-json/v2/note/114',
+            type: 'DELETE',
+            success: (response) => {
+                console.log("congrats");
+                console.log(response);
+            },
+            error: (response) => {
+                console.log("cSorry");
+                console.log(response);
+            }
+        });
+    }
+
+**** IMPORTANTE: Cómo podemos pasar el id del "note" al frontend para usarlo con JS? 
+En el archivo "page-my-notes", en <li> , añadimos data-id="<?php the_ID(); ?>", es decir, <li data-id="<?php the_ID(); ?>">... Asi pasamos el id de cada note
+ Posteriormente, en JS, dentro del metodo delete, creamos la variable
+
+ var thisNote= $(e.target).parents("li");
+
+de este modo, id = thisNote.data('id');
+
+y podemos hacer un enlace dinamico: universityData.root_url + '/wp-json/v2/note/'+thisNote.data('id')
+
+**** IMPORTANTE: Cuando creamos un nuevo elemento con POST Request, se quedará en estado "Draft" esperando a que se publique. Con este código, se puede automatizar y hacer que al crearlo quede publicado añadiendo el codigo en el metodo :
+
+'status' : 'publish'
+
+
+**** Este Codigo se debe añadir en el post_type del cual queremos modificar sus roles
+'capability_type' => 'note',
+'map_meta_cap' => true,
+
+*** Privacidad: Cualquier usuario puede hacer un get request, sin estar logado, y recibir toda la informacion de los notes... Podemos hacer private content... Visibility-> Private... en functions.php
+
+// Force Note Posts to be private
+add_filter('wp_insert_post_data', 'makeNotePrivate');
+
+function makeNotePrivate($data){
+    // $data es toda la informacion del post_type
+    if($data['post_type'] == 'note' AND $data['post_status'] != 'trash'){
+        $data['post_status']= 'private';
+    }
+    
+    return $data;
+}
+
+*** Eliminar "Private :" 
+str_replace('Private: ','',esc_attr(get_the_title())); 
+
+
+*** We add more security
+add_filter('wp_insert_post_data', 'makeNotePrivate');
+
+function makeNotePrivate($data){
+    // $data es toda la informacion del post_type
+    if($data['post_type'] == 'note' AND $data['post_status'] != 'trash'){
+        $data['post_status']= 'private';
+    }
+
+    // Funcion para limpiar todo lo que el usuario introduce en el text area
+    if($data['post_type'] == 'note'){
+        $data['post_content'] = sanitize_textarea_field($data['post_content']);
+        $data['post_title'] = sanitize_text_field($data['post_title']);
+    }
+    
+    return $data;
+}
+
+
+*** Añadir informacion que damos en el REST API
+require get_theme_file_path( '/includes/search-route.php' );
+
+function unversity_custom_rest(){
+    // Pasamos el nombre del autor
+    register_rest_field('post', 'authorName', array(
+        'get_callback' => function() {return get_the_author();}
+    ));
+
+    // indicamos cuantos notas tiene un usuario
+    register_rest_field('note', 'userNoteCount', array(
+        'get_callback' => function() {return count_user_posts( get_the_current_user_id(), 'note');}
+    ));
+}

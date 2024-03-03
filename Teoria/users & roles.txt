@@ -1,0 +1,64 @@
+· Podemos usar el plugin para crear usuarios y darles nosotros lo que pueden hacer
+
+· MEMBERS : Members - Membership & User Role Editor Plugin by MemberPress
+
+· 'capability_type' => 'event',
+   'map_meta_cap' => true, 
+   
+   Al definir esta linea de codigo en el post type, hará que no sea considerado como un post y podremos modificar su rol por el plugin Members
+
+
+· CRUD user-specific content
+
+· Settings -> Membership: Everyone can register
+· New User Role : Subscriber
+
+· is_user_logger_in() : Funcion de WP que devuelve true si el usuario esta logueado
+
+· En el boton de logout, indicando en href esta funcion wp_logout_url(); automaticamente ya desloga al usuario 
+
+· get_avatar(get_current_user_id(), 60); : esta funcion obtiene el avatar del usuario dando el id del mismo con la funcion get_current_user_id()
+
+· REDIRIGIR AL SUBSCRIBER CUANDO HACE LOGOUT
+
+add_action('admin_init', 'redirectSubsToFrontend');
+
+function redirectSubsToFrontend(){
+    
+    $ourCurrentUser = wp_get_current_user();
+    
+    if(count($ourCurrentUser -> roles) == 1 AND $ourCurrentUser->roles[0] == 'subscriber' ){
+        wp_redirect(site_url('/'));
+        exit; 
+    }
+}
+
+add_action('wp_loaded', 'noSubsAdminBar');
+
+function noSubsAdminBar(){
+    
+    $ourCurrentUser = wp_get_current_user();
+    
+    if(count($ourCurrentUser -> roles) == 1 AND $ourCurrentUser->roles[0] == 'subscriber' ){
+        show_admin_bar(false);
+    }
+}
+
+Esta funcion lo que hace es redirige al subscriber al main page automaticamente
+
+
+· NO MOSTRAR AL SUBSCRIBER LA ADMIN BAR DE ARRIBA
+
+add_action('wp_loaded', 'noSubsAdminBar');
+
+function noSubsAdminBar(){
+    
+    $ourCurrentUser = wp_get_current_user();
+    
+    if(count($ourCurrentUser -> roles) == 1 AND $ourCurrentUser->roles[0] == 'subscriber' ){
+        show_admin_bar(false);
+    }
+}
+
+
+

@@ -1,0 +1,205 @@
+- "style.css" debe tener este nombre, sino WP no lo reconoce
+
+- Para que el tema tenga una imagen, en la carpeta base, añadimos la imagen con nombre "screenschot.png"
+
+- En el doc de posts.php, hay funciones de WP en referencia a los posts
+
+- "single.php" es el nombre exacto para escribir codigo de un post
+
+- "page.php" es el archivo que define el estilo de una pagina de wordpress
+
+- El loop es un signo caracteristico de WP
+
+- "header.php" es el documento que WP identifica como header y que contiene el codigo
+
+- "notes.php" es el documento que WP identifica como footer
+
+- "function.php" es un documento privado, los otros son templates (renderizan html)
+
+-  <?php wp_head(); : añadir esto en el head del html es para renderizar las funciones de functions.php, para darle estilo
+
+- get_theme_file_uri('images/library-hero.jpg'); sirve para coger la imagen y mostrarla
+
+- <?php the_content(); ?> : muestra el contenido de la pagina
+
+- get_the_ID(); : esta funcion de WP devuelve el numero de pagina o post; cada pagina y post tiene un identificador unico
+
+- wp_get_post_parent_id() : devuelve el nº de post de la pagina padre
+
+- ECHO or RETURN ? si la funcion empieza por get, devuelve un valor ( GET = RETURN) . Pero si empieza por the_, hará echo de algo en pantalla
+
+- https://codex.wordpress.org/
+- https://developer.wordpress.org/ 
+
+- Associative Array
+
+$animalSounds = array(
+    'cat' => 'Miau',
+    'dog => 'Bub',
+    'pig' => 'oink',
+)
+
+echo $animalSounds['dog']; mostrará "Bub"
+
+- <meta name="viewport" content="width=device-width, initial-scale=1">
+Esta línea es para activar el responsive mode que adopta el buscador, debe estar bien codificado con css
+
+- <html <?php language_attributes(); ?> > : sirve para que automaticamente adopte el lenguage de la web en el codigo html
+
+- <meta charset=" bloginfo('charset')">
+
+- <body <?php body_class(); ?> > : funcion de WP que incluye en el body classes que puedes usar en css para dar un estilo particular o usarlo en JS
+
+- MENU MODIFICABLE POR USUARIO
+    · register_nav_menu('headerMenuLocation', 'Header Menu Location'); : esta funcion añade al tema la opción de crear un menu desde Apariencia->Menus y seleccionar las paginas
+    · <?php wp_nav_menu('haderMenuLocation'); ?> : muestra el menu en el header, menu el cual ha editado el usuario graficamente
+
+- "current-menu-item" : es una clase que añade WP al nombre de la pagina en la que estás, por ejemplo, si estás en "About Us", la palabra "About us" del menú tendrá esta etiqueta y puedes modifcar su color por ejemplo con css para que el usuario lo vea
+
+- <?php if( is_page() or wp_get_post_parent_id(0)==16 ) echo 'class="current-menu-item"'?>
+Este codigo lo usamos en caso que escrivamos el menu manualmente, para que añada la clase "current-menu-item" a <li> en el caso que sea la pagina actual y poder pintarla con css para diferenciarla/ is_page() da TRUE si esta en la página /wp_get_post_parent_id(0)) = TRUE si está su child page. el 16 es porque la pagina "About us" concretamente tiene id 16
+
+
+- front-page.php : una vez creada, es la que substitye la blog y es el codigo de la home, la principal de la web
+
+- index.php será la BLOG
+
+- the_excerpt(); funcion de WP que muestra el contenido de un post del blog
+
+- the_author_posts_link(); : devuelve el nombre del autor de un post y es un enlace hacia todos los posts que ha hecho 
+
+- the_time(); : muestra el tiempo que se escribio el post, se le tiene que dar formato con letras
+
+-  echo paginate_links(); : funcion que devuelve la paginacion de las entradas
+
+- archive.php : Esta pagina es la que estructura las paginas de categoria: autor, category, etc. Le da formato
+
+- single_cat_title(); muestra el nombre de la categoria de la pagina
+
+- the_archive_title(); : es una funcion de WP que muestra automaticamente si es una categoria, autor, si es de un año concreto, etc. muy completa.
+
+- the_archive_description(); : muestra la descripcion de la categoria/autor, etc.
+
+**Custom queries
+
+- <?php echo wp_trim_words(get_the_content(),18); ?> : funcion que recorta todo el contenido y solo muestra los primeros 18 caracteres, concretamente del contendio del post
+
+- WP DASH ICONS : https://developer.wordpress.org/resource/dashicons/#menu-alt3
+ENlace donde hay el codigo de muchos icons que se pueden asignar a post types
+
+- Creamos la carpeta Must Use Plugins de nombre "mu-plugins"
+Esta carpeta contendrá la informacion del post type para que el usuario no la pueda eliminar 
+
+- ¡¡¡ Cuando creamos una página concreta con WP, por ejemplo, past-events
+para modificar su contenido y apariencia con codigo debemos crear en el tema el siguiente archivo:
+
+    page-past-events.php
+
+    page-"slug de la pagina".php
+
+y así el código escrito sera exclusivo para esta pagina
+
+- print_r($variable); : Funcion de PHP que imprime lo que haya, no importa el formato
+
+-  array(
+        'key' => 'related_programs',
+        'compare' => 'LIKE',
+        'value' => '"'.get_the_ID().'"'
+)
+
+· hacemos el '"'. get_the_ID() .'"' para indicar que encuentre el valor "get_the_ID()"
+· con el . podemos concatenar el string, "juntar partes"
+· la funcion get_the_ID() devuelve el valor del ID del post type , en este caso, un related_program
+
+· Multiple WP_Query : la funcion wp_reset_postdata(  ); es muy importante, resetea los valores del post-type para que no se coman unos a otros. Se escribe entre los queries.
+
+· add_theme_support('post-thumbnails'); -> Esta funcion activada en Functions.php hace "enable" que cada post type tenga una imagen tipo thumbnail que la represente; esto lo activamos para que cada professor tenga una imagen
+
+'supports' => array('title', 'editor','thumbnail') : Tambien lo tenemos que añadir
+
+
+· the_post_thumbnail(); : funcion que muestra el thumbnail del post type
+Si añadimos dentro el nombre 'professorPortrait' mostrará la imagen segun las dimensiones definidas
+
+
+· IMPORTANT: si no sabemos lo que hay en una variable, podemos hacer el comando print_r(x) donde x es lo que queremos saber qué contiene. Asi podremos llamar y ver su contenido para usarlo. 
+
+
+· get_template_part('templates-part/event','variation'); : Esta funcion es muy potente. Es para usar templates directamente que nosotros creamos. En este caso, el template está en la carpeta "templates-parts" y el archivo es "event-variation.php". Si el "variation" no está, la función sería solo 'templates-part/event' y nada más.
+
+· El paquete @wordpress/scripts es oficial de WP para usar JS en el proyecto
+enlace: nodejs.org/en/
+
+We have to install node in the computer
+
+· La carpeta src ha de ser nombrada així, ja que WP la trobara. Sempre escriurem l'arxiu index.js dins "src" no en la carpeta "build"
+
+· Google Maps API : Se debe activar dentro de GoogleAPI, activar 3
+    - Geocoding API
+    - Maps JavaScript API
+    - Places API
+Después, en functions.php, este codigo
+
+
+function universityMapKey($api){
+    $api['key]="api_nº";
+    return $api; 
+}
+add_filter('acf/field/google_map/api', 'universityMapKey');
+
+· http://test.local//wp-json/wp/v2/posts ,,, en este archivo esta toda la informacion de los posts en un formato json, de aqui obtendremos los datos del WP 
+
+JSON = Java Script Object Notation
+
+www.getpostman.com : programa que traduce un docuemnto JSON desordenado en uno ordenado para usarlo
+
+Podemos hacer busquedas personalizadas
+
+http://test.local//wp-json/wp/v2/posts?post_per_page=2 : muestra ultimos dos posts
+
+http://test.local//wp-json/wp/v2/posts/7 :  devolvera el post nº 7
+
+http://test.local//wp-json/wp/v2/posts?search=biology : Hace una busqueda dentro de posts de la palabra "award"
+
+
+· REST API WordPress permet el CRUD: Create, Read, Update, Delete. Permet interactuar amb WOrdPress i modifcar la web a mesura que es fan coses
+DOCUMENTACION : https://developer.wordpress.org/rest-api/
+
+· Dentro de `` en JS, si usamos ${} podemos incluir una expresion
+
+· $.when().then(); Es una funcion de JQuery que permite usar dos funciones asincronamente, when, y definir un then
+
+· Para modificar el enlace de rest API de un post type que hemos creado, tenemos que escribir la linea (dentro de la definicion del post type)
+
+'show_in_rest' => true
+
+Esto es para que en este enlace podamos escribir professor : http://test.local//wp-json/wp/v2/professor
+
+· Podemos crear nuestro propio enlace de API REST y dedicir qué mostrar y qué no
+4 razones principales
+    1. Custom search logic
+    2. Respond with less JSON data (load faster fos visitors)
+    3. Send only 1 gesJSON request instead of 6 in our JS
+    4. Perfect exercise for sharpening PHP skills
+
+· "search.php" es la pagina default de WP para las busquedas
+
+esc_url() esta funcion da seguridad cuando tratamos con los enlaces de la web
+
+$ method="get" en un Form de HTML hara que el input del formulario acabe en el URL
+
+· Creamos un archivo searchform.php en la carpeta madre con codigo de formulario, la funcion de WP get_search_form() la recuperará como template.
+
+· WP_redirect(); exit; : usamos esto para redirigir un usuario a la pagina indicada, en caso que no este logado
+
+· Esta linea de codigo: 'author' => get_current_user_id() hace que el WP_Query() devuelva unicamente las notas del current_user_id - autor
+
+· Si añadimos "readonly" en una etiqueta tipo input o ariatext, haremos que el usuario no pueda modificarlo hasta que se modifique con js
+
+·escape functions
+
+esc_attr() : usamos dentro de alguna etiqueta, value=esc_attr()
+esc_textarea() : para etiqueta <textarea> </textarea>
+esc_html() : usamos dentro de <p> </p> 
+
+

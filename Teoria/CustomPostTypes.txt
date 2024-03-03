@@ -1,0 +1,43 @@
+· WP solo incluye "Posts" y "Pages" dentro del menú del dashboard
+· Esto es algo muy poderoso de WP, poder manipular tantos tipos de datos y guardarlos en la BD muy facilmente
+· Cada elemento es un post type y tiene sus variables, valores, titulos, etc
+· Aprenderemos a crear nuestros propios post types, por ejemplo, "Universidades", "Cursos", "Proyectos", etc. 
+· http://test.local/wp-admin/edit.php?post_type=page ... post_type = pages (1)
+· http://test.local/wp-admin/edit.php ... post_type=post
+ 
+**STEPS**
+
+1. Crear una carpeta dentro de App/wp-contents/ de nombre "mu-plugins"
+
+2. Crear un archivo que referencie los post types, university_post_type.php 
+
+3. Escribir el codigo: 
+<?php 
+
+// Crearemos una funcion para crear los post types
+function unversity_post_types(){
+    register_post_type('event', array(
+        'has_archive' => true,
+        'rewrite' => array(
+            'slug' => 'events'
+        ),
+        'public' => true,
+        'labels' => array(
+            'name' => 'Events',
+            'show_in_rest' => true,
+            'add_new_item' => 'Add New Event',
+            'edit_item' => 'Edit Event',
+            'all_items' => 'All Events',
+            'singular_name' => 'Event'
+        ),
+        'menu_icon'=> 'dashicons-calendar',
+    ));
+}
+add_action('init','unversity_post_types');
+
+?>
+
+
+4. Para crear una pagina concreta que determine el estilo de un Post_type, creamos el archivo "single_postName.php", por ejemplo, si el post_type es "event", creamos "single_event.php"
+
+5. Para dar formato al post_type, creamos el archivo "archive-post_type.php" para dar formato, por ejemplo, si el post_type es "event", creamos "archive-event.php". Esta pagina es como una pagina de "category", pero nos muestra los Eventos

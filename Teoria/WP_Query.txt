@@ -1,0 +1,85 @@
+La función WP_Query() en WordPress es una herramienta poderosa que se utiliza para recuperar contenido de la base de datos de WordPress según ciertos parámetros y criterios. Permite realizar consultas personalizadas para obtener publicaciones, páginas, tipos de contenido personalizado, términos de taxonomía y más. Aquí hay una explicación más detallada de cómo funciona:
+**EJEMPLO**
+<?php
+    // Creamos un custom querie para obtener informacion de los recent posts
+    $homePagePosts = new WP_Query(array(
+        'posts_per_page' => 2
+    ));
+
+    while($homePagePosts->have_posts()){
+        $homePagePosts->the_post(); ?>
+        <li> <?php the_title(); ?> </li>
+    <?php        
+        }
+?>
+
+
+**TEORIA CHATGPT**
+Sintaxis Básica:
+php
+Copy code
+$query = new WP_Query( $args );
+$args (opcional): Es un array de argumentos que define los parámetros de la consulta. Puedes especificar condiciones como tipo de contenido, categorías, etiquetas, fechas, autor, y muchos otros.
+Ejemplos de Uso Común:
+Recuperar Publicaciones de una Categoría Específica:
+
+php
+Copy code
+$args = array(
+    'category_name' => 'noticias',
+);
+$query = new WP_Query( $args );
+Recuperar Últimas 5 Publicaciones:
+
+php
+Copy code
+$args = array(
+    'posts_per_page' => 5,
+);
+$query = new WP_Query( $args );
+Recuperar Páginas con un Título Específico:
+
+php
+Copy code
+$args = array(
+    'post_type' => 'page',
+    'pagename' => 'about-us',
+);
+$query = new WP_Query( $args );
+Recuperar Publicaciones Personalizadas con Metadatos:
+
+php
+Copy code
+$args = array(
+    'post_type' => 'custom_post_type',
+    'meta_key' => 'custom_field_name',
+    'meta_value' => 'desired_value',
+);
+$query = new WP_Query( $args );
+Métodos Importantes de WP_Query:
+have_posts(): Verifica si hay publicaciones en la consulta.
+
+php
+Copy code
+if ( $query->have_posts() ) {
+    while ( $query->have_posts() ) {
+        $query->the_post();
+        // Acciones para cada publicación.
+    }
+}
+the_post(): Configura la publicación actual en el bucle.
+
+wp_reset_postdata(): Restaura los datos de la publicación después de usar WP_Query.
+
+rewind_posts(): Reinicia el bucle para volver a la primera publicación.
+
+Consideraciones Importantes:
+Reseteo de Consulta: Si usas WP_Query en un lugar donde ya hay una consulta principal de WordPress (por ejemplo, en un archivo de plantilla), es buena práctica restablecer la consulta principal después de tu consulta personalizada usando wp_reset_query() o wp_reset_postdata().
+
+Paginación: WP_Query maneja automáticamente la paginación si se especifica 'posts_per_page' y hay más publicaciones que el límite establecido.
+
+Filtros y Acciones: Puedes utilizar varios filtros y acciones de WordPress para modificar la consulta antes o después de ejecutarla.
+
+WP_Query es una herramienta versátil y fundamental para desarrolladores de WordPress que necesitan realizar consultas personalizadas en su sitio. Te permite adaptar la presentación de contenido de acuerdo con tus necesidades específicas.
+
+Después de usar el WPQUERY, hacemos reset: wp_reset_postdata(  );
